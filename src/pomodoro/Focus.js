@@ -31,6 +31,18 @@ return (
                 >
                     <span className="oi oi-minus" />
                 </button>
+
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  data-testid="increase-focus"
+                  name="increase-focus"
+                  on-click="handleIncrementClick"
+                >
+                    <span className="oi oi-plus" />
+
+                </button>
+
                 </div>
             </div>
         </div>

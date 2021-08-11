@@ -31,7 +31,10 @@ function Break ({breakDuration, handleIncrementClick}) {
                   name="increase-break"
                   on-click="handleIncrementClick"
                 >
+                                    <span className="oi oi-plus" />
+
                 </button>
+
             </div>
         </div>
     </div>

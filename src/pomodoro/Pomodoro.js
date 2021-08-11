@@ -159,6 +159,7 @@ function handleStop(){
 
        <Break
         breakDuration={breakDuration}
+        handleIncrementClick={handleIncrementClick}
       />
       <Focus
       focusDuration={focusDuration}
