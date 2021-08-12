@@ -3,6 +3,7 @@ import useInterval from "../utils/useInterval";
 import Focus from "./Focus";
 import Break from "./Break";
 import PlayPause from "./PlayPause";
+import SubTitle from "./SubTitle";
 
 
   const initialStates = {
@@ -74,7 +75,7 @@ function Pomodoro() {
 
   //disable and enable stop button
   const [stopButton, setStopButton] = useState(true)
-  const [disableButton, setDisableButton] = useState(false)
+  const [disableButton, setDisableButton] = useState(true)
 
 
 
@@ -108,22 +109,47 @@ function handleStop(){
   setStopButton(true)
   setSession(null)
   setDisableButton(false)
+  setFocusSessionActive(false)
+  setSessionCountdown(0)
 }
 
-  /**
-   * Custom hook that invokes the callback function every second
-   *
-   * NOTE: You will not need to make changes to the callback function
-   */
-  useInterval(() => {
-      if (session.timeRemaining === 0) {
-        new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
-        return setSession(nextSession(focusDuration, breakDuration));
+
+  useInterval(
+    () => {
+
+      // Progress bar
+      if (focusSessionActive) {
+        setAriaValue((sessionCountdown / (focusDuration * 60)) * 100);
+      } else if (!focusSessionActive && (sessionCountdown !== 0)) {
+        setAriaValue((sessionCountdown / (breakDuration * 60)) * 100);
       }
-      return setSession(nextTick);
+
+      /*
+      Run increment countdown at turn of new session
+      */
+      setSessionCountdown((currentSessionCountdown) => {
+        if (
+          focusSessionActive &&
+          currentSessionCountdown === focusDuration * 60
+        ) {
+          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
+          setFocusSessionActive(!focusSessionActive);
+          return (currentSessionCountdown = 0);
+        } else if (
+          !focusSessionActive &&
+          currentSessionCountdown === breakDuration * 60
+        ) {
+          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
+          setFocusSessionActive(!focusSessionActive);
+          return (currentSessionCountdown = 0);
+        } else {
+          return (currentSessionCountdown += 1);
+        }
+      });
     },
     isTimerRunning ? 1000 : null
   );
+
 
   /**
    * Called whenever the play/pause button is clicked.
@@ -136,6 +162,8 @@ function handlePlayPauseClick() {
            // If the timer is starting and the previous session is null,
            // start a focusing session.
            if (prevStateSession === null) {
+            setDisableButton(false);
+            setSessionCountdown(sessionActive)
              return {
                label: "Focusing",
                timeRemaining: focusDuration * 60,
@@ -170,6 +198,13 @@ function handlePlayPauseClick() {
         sessionCountdown={sessionCountdown}
         handlePlayPauseClick={handlePlayPauseClick}
         ariaValue={ariaValue}
+      />
+      <SubTitle
+      sessionActive={sessionActive}
+      ariaValue={ariaValue}
+      sessionCountdown={sessionCountdown}
+      focusDuration={focusDuration}
+      breakDuration={breakDuration}
       />
     </div>
   )
