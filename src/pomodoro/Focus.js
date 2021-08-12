@@ -1,10 +1,9 @@
 import React from "react";
-import classNames from "../utils/class-names";
 import { minutesToDuration} from "../utils/duration";
-import Pomodoro from "./Pomodoro.js";
 
 function Focus({
-    focusDuration
+    focusDuration,
+    handleIncrementClick
     }) {
 
 
@@ -27,7 +26,7 @@ return (
                     className="btn btn-secondary"
                     data-testid="decrease-focus"
                     name="decrease-focus"
-                    on-click="handleIncrementClick"
+                    onClick={handleIncrementClick}
                 >
                     <span className="oi oi-minus" />
                 </button>
@@ -37,7 +36,7 @@ return (
                   className="btn btn-secondary"
                   data-testid="increase-focus"
                   name="increase-focus"
-                  on-click="handleIncrementClick"
+                  onClick={handleIncrementClick}
                 >
                     <span className="oi oi-plus" />
 

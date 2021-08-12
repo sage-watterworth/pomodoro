@@ -19,7 +19,7 @@ function Break ({breakDuration, handleIncrementClick}) {
                   className="btn btn-secondary"
                   data-testid="decrease-break"
                   name="decrease-break"
-                  on-click="handleIncrementClick"
+                  onClick={handleIncrementClick}
                 >
                   <span className="oi oi-minus" />
                 </button>
@@ -29,9 +29,9 @@ function Break ({breakDuration, handleIncrementClick}) {
                   className="btn btn-secondary"
                   data-testid="increase-break"
                   name="increase-break"
-                  on-click="handleIncrementClick"
+                  onClick={handleIncrementClick}
                 >
-                                    <span className="oi oi-plus" />
+                  <span className="oi oi-plus" />
 
                 </button>
 

@@ -1,8 +1,6 @@
 import React from "react";
 import classNames from "../utils/class-names";
 import {minutesToDuration, secondsToDuration} from "../utils/duration";
-import Pomodoro from "./Pomodoro.js";
-
 
 function PlayPause({
 isTimerRunning,
@@ -63,10 +61,10 @@ return(
   <div className="col">
     {/* TODO: Update message below to include current session (Focusing or On Break) total duration */}
     <h2 data-testid="session-title">
-        {focusSessionActive ? "Focusing" : "On Break"} for
+        {focusSessionActive ? "Focusing" : "On Break"} for {" "}
         {focusSessionActive
           ? `${minutesToDuration(focusDuration)}`
-          : `${minutesToDuration(breakDuration)}`}
+          : `${minutesToDuration(breakDuration)}`} {" "}
       minutes
     </h2>
     {/* TODO: Update message below correctly format the time remaining in the current session */}
@@ -85,7 +83,7 @@ return(
                 aria-valuemin="0"
                 aria-valuemax="100"
                 aria-valuenow={ariaValue}  // TODO: Increase aria-valuenow as elapsed time increases
-                style={{ width: ariaValue }} // Completed: Increase width % as elapsed time increases
+                style={{ width: `${ariaValue}%` }}  // Completed: Increase width % as elapsed time increases
             />
         </div>
   </div>

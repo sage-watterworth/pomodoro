@@ -5,8 +5,6 @@ import Break from "./Break";
 import PlayPause from "./PlayPause";
 
 
-
-  // Initial values of focus duration, break duration, timerRunning & session countdown
   const initialStates = {
     focusDuration: 25,
     breakDuration: 5,
@@ -69,7 +67,7 @@ function Pomodoro() {
   const [sessionActive, setSessionActive] = useState(false);
   const [ariaValue, setAriaValue] = useState(0);
 
-  // ToDo: Allow the user to adjust the focus and break duration. (DONE?)
+  // ToDo: Allow the user to adjust the focus and break duration.
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
   const [focusSessionActive, setFocusSessionActive] = useState(false);
@@ -81,34 +79,29 @@ function Pomodoro() {
 
 
   const handleIncrementClick = ({ target }) => {
-
-  if (!focusSessionActive && sessionCountdown === 0) {
-    switch (target["name"]) {
-      case "decrease-focus":
-        setFocusDuration((currentFocusDuration) =>
-          Math.max(5, currentFocusDuration - 5)
-        );
-        break;
-      case "increase-focus":
-        setFocusDuration((currentFocusDuration) =>
-          Math.min(60, currentFocusDuration + 5)
-        );
-        break;
-      case "decrease-break":
-        setBreakDuration((currentBreakDuration) =>
-          Math.max(1, currentBreakDuration - 1)
-        );
-        break;
-      case "increase-break":
-        setBreakDuration((currentBreakDuration) =>
-          Math.min(15, currentBreakDuration + 1)
-        );
-        break;
-      default:
-        break;
+    if (
+      target.name === "increase-focus" ||
+      target.parentNode.name === "increase-focus"
+    ) {
+      setFocusDuration((currentFocusDuration) => Math.min(currentFocusDuration + 5, 60));
+    } else if (
+      target.name === "decrease-focus" ||
+      target.parentNode.name === "decrease-focus"
+    ) {
+      setFocusDuration((currentFocusDuration) => Math.max(currentFocusDuration - 5, 5));
+    } else if (
+      target.name === "increase-break" ||
+      target.parentNode.name === "increase-break"
+    ) {
+      setBreakDuration((currentFocusDuration) => Math.min(currentFocusDuration + 1, 15));
+    } else if (
+      target.name === "decrease-break" ||
+      target.parentNode.name === "decrease-break"
+    ) {
+      setBreakDuration((currentFocusDuration) => Math.max(currentFocusDuration - 1, 1));
     }
-  }
-};
+  };
+
 
 function handleStop(){
   setIsTimerRunning(false)
@@ -135,25 +128,26 @@ function handleStop(){
   /**
    * Called whenever the play/pause button is clicked.
    */
-  function handlePlayPauseClick() {
-    setIsTimerRunning((prevState) => {
-      const nextState = !prevState;
-      if (nextState) {
-        setSession((prevStateSession) => {
-          // If the timer is starting and the previous session is null,
-          // start a focusing session.
-          if (prevStateSession === null) {
-            return {
-              label: "Focusing",
-              timeRemaining: focusDuration * 60,
-            };
-          }
-          return prevStateSession;
-        });
+function handlePlayPauseClick() {
+     setIsTimerRunning((prevState) => {
+       const nextState = !prevState;
+       if (nextState) {
+         setSession((prevStateSession) => {
+           // If the timer is starting and the previous session is null,
+           // start a focusing session.
+           if (prevStateSession === null) {
+             return {
+               label: "Focusing",
+               timeRemaining: focusDuration * 60,
+             };
+           }
+           return prevStateSession;
+         });
       }
-      return nextState;
+    return nextState;
     });
   }
+
   return (
     <div className="pomodoro">
 
@@ -163,6 +157,7 @@ function handleStop(){
       />
       <Focus
       focusDuration={focusDuration}
+      handleIncrementClick={handleIncrementClick}
       />
       <PlayPause
         isTimerRunning={isTimerRunning}
