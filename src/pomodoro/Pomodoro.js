@@ -5,6 +5,7 @@ import Break from "./Break";
 import PlayPause from "./PlayPause";
 import SubTitle from "./SubTitle";
 
+function Pomodoro() {
 
   const initialStates = {
     focusDuration: 25,
@@ -15,6 +16,23 @@ import SubTitle from "./SubTitle";
     sessionActive: false,
     ariaValue: 0,
   };
+
+  // Timer starts out paused
+  const [isTimerRunning, setIsTimerRunning] = useState(false);
+  // The current session - null where there is no session running
+  const [session, setSession] = useState(null);
+  const [sessionCountdown, setSessionCountdown] = useState(0);
+  const [sessionActive, setSessionActive] = useState(false);
+  const [ariaValue, setAriaValue] = useState(0);
+
+  // ToDo: Allow the user to adjust the focus and break duration.
+  const [focusDuration, setFocusDuration] = useState(25);
+  const [breakDuration, setBreakDuration] = useState(5);
+  const [focusSessionActive, setFocusSessionActive] = useState(false);
+
+  //disable and enable stop button
+  const [stopButton, setStopButton] = useState(true)
+  const [disableButton, setDisableButton] = useState(true)
 
 /**
  * Update the session state with new state after each tick of the interval.
@@ -59,25 +77,6 @@ function nextSession(focusDuration, breakDuration) {
   };
 }
 
-function Pomodoro() {
-  // Timer starts out paused
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-  // The current session - null where there is no session running
-  const [session, setSession] = useState(null);
-  const [sessionCountdown, setSessionCountdown] = useState(0);
-  const [sessionActive, setSessionActive] = useState(false);
-  const [ariaValue, setAriaValue] = useState(0);
-
-  // ToDo: Allow the user to adjust the focus and break duration.
-  const [focusDuration, setFocusDuration] = useState(25);
-  const [breakDuration, setBreakDuration] = useState(5);
-  const [focusSessionActive, setFocusSessionActive] = useState(false);
-
-  //disable and enable stop button
-  const [stopButton, setStopButton] = useState(true)
-  const [disableButton, setDisableButton] = useState(true)
-
-
 
   const handleIncrementClick = ({ target }) => {
     if (
@@ -113,7 +112,6 @@ function handleStop(){
   setSessionCountdown(0)
 }
 
-
   useInterval(
     () => {
 
@@ -123,6 +121,7 @@ function handleStop(){
       } else if (!focusSessionActive && (sessionCountdown !== 0)) {
         setAriaValue((sessionCountdown / (breakDuration * 60)) * 100);
       }
+
 
       /*
       Run increment countdown at turn of new session
@@ -205,6 +204,7 @@ function handlePlayPauseClick() {
       sessionCountdown={sessionCountdown}
       focusDuration={focusDuration}
       breakDuration={breakDuration}
+      focusSessionActive={focusSessionActive}
       />
     </div>
   )

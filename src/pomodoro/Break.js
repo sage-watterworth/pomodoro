@@ -40,6 +40,7 @@ function Break ({breakDuration, handleIncrementClick}) {
     </div>
 </div>
 
-            )}
+);
+}
 
 export default Break;

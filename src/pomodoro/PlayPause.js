@@ -1,17 +1,11 @@
 import React from "react";
 import classNames from "../utils/class-names";
-import {minutesToDuration, secondsToDuration} from "../utils/duration";
 
 function PlayPause({
 isTimerRunning,
 handleStop,
 disableButton,
-breakDuration,
-focusSessionActive,
-focusDuration,
-sessionCountdown,
-handlePlayPauseClick,
-ariaValue
+handlePlayPauseClick
 }) {
 
 return(
@@ -53,10 +47,8 @@ return(
   </div>
 </div>
 </div>
-
-
-
 </div>
+
 
 );
 }
