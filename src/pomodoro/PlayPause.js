@@ -5,7 +5,8 @@ function PlayPause({
 isTimerRunning,
 handleStop,
 disableButton,
-handlePlayPauseClick
+handlePlayPauseClick,
+sessionActive
 }) {
 
 return(
@@ -40,7 +41,7 @@ return(
       data-testid="stop"
       title="Stop the session"
       onClick={handleStop}
-      disabled={disableButton}
+      disabled={!sessionActive}
     >
       <span className="oi oi-media-stop" />
     </button>
@@ -48,8 +49,6 @@ return(
 </div>
 </div>
 </div>
-
-
 );
 }
 export default PlayPause;

@@ -8,25 +8,27 @@ function SubTitle({ ariaValue, breakDuration, focusDuration, sessionActive, focu
         {/* TODO: This area should show only when there is an active focus or break - i.e. the session is running or is paused */}
             <div className={classNames({
                 "row mb-2":sessionActive,
-                "d-none": !sessionActive,
+                //"d-none": !sessionActive,
             })}
             >
                  <div className="col">
             {/* TODO: Update message below to include current session (Focusing or On Break) and total duration */}
             {sessionActive && (
               <h2 data-testid="session-title">
-                {focusSessionActive ? "Focusing" : "On Break"} for{" "}
-                {focusSessionActive
+                {!focusSessionActive ? "Focusing" : "On Break"} for{" "}
+                {!focusSessionActive
                   ? `${minutesToDuration(focusDuration)}`
                   : `${minutesToDuration(breakDuration)}`}{" "}
                 minutes
               </h2>
             )}
             {/* TODO: Update message below to include time remaining in the current session */}
+            {sessionActive &&
             <p className="lead" data-testid="session-sub-title">
-              {focusSessionActive ? `${secondsToDuration(focusDuration * 60 - sessionCountdown)}` : `${secondsToDuration(breakDuration * 60 - sessionCountdown)}`}{" "}
+              {!focusSessionActive ? `${secondsToDuration(focusDuration * 60 - sessionCountdown)}` : `${secondsToDuration(breakDuration * 60 - sessionCountdown)}`}{" "}
               remaining
             </p>
+            }
           </div>
         </div>
         <div className="row mb-2">
@@ -35,7 +37,7 @@ function SubTitle({ ariaValue, breakDuration, focusDuration, sessionActive, focu
             <div
               className={classNames({
                 progress: sessionActive,
-                "d-none": !sessionActive,
+                //"d-none": !sessionActive,
               })}
               style={{ height: "20px" }}
             >
@@ -50,7 +52,8 @@ function SubTitle({ ariaValue, breakDuration, focusDuration, sessionActive, focu
             </div>
           </div>
         </div>
-      </div>)
+      </div>
+      );
 }
 
 export default SubTitle;

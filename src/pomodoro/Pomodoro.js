@@ -109,14 +109,14 @@ function handleStop(){
   setSession(null)
   setDisableButton(false)
   setFocusSessionActive(false)
-  setSessionCountdown(0)
+  setSessionActive(false)
 }
 
   useInterval(
     () => {
 
       // Progress bar
-      if (focusSessionActive) {
+      if (!focusSessionActive) {
         setAriaValue((sessionCountdown / (focusDuration * 60)) * 100);
       } else if (!focusSessionActive && (sessionCountdown !== 0)) {
         setAriaValue((sessionCountdown / (breakDuration * 60)) * 100);
@@ -163,6 +163,7 @@ function handlePlayPauseClick() {
            if (prevStateSession === null) {
             setDisableButton(false);
             setSessionCountdown(sessionActive)
+            setSessionActive(true)
              return {
                label: "Focusing",
                timeRemaining: focusDuration * 60,
@@ -197,6 +198,7 @@ function handlePlayPauseClick() {
         sessionCountdown={sessionCountdown}
         handlePlayPauseClick={handlePlayPauseClick}
         ariaValue={ariaValue}
+        sessionActive={sessionActive}
       />
       <SubTitle
       sessionActive={sessionActive}
