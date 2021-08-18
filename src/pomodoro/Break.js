@@ -1,7 +1,6 @@
 import React from "react";
-import {minutesToDuration} from "../utils/duration";
 
-function Break ({breakDuration, handleIncrementClick}) {
+function Break ({breakDuration, setBreakDuration, isTimerRunning}) {
 
     return (
 
@@ -10,7 +9,7 @@ function Break ({breakDuration, handleIncrementClick}) {
             <div className="input-group input-group-lg mb-2">
               <span className="input-group-text" data-testid="duration-break">
                 {/* TODO: Update this text to display the current break session duration */}
-                Break Duration: {minutesToDuration(breakDuration)}
+                Break Duration: {("0" + breakDuration).substr(-2)}:00
               </span>
               <div className="input-group-append">
                 {/* TODO: Implement decreasing break duration and disable during a focus or break session*/}
@@ -18,8 +17,12 @@ function Break ({breakDuration, handleIncrementClick}) {
                   type="button"
                   className="btn btn-secondary"
                   data-testid="decrease-break"
-                  name="decrease-break"
-                  onClick={handleIncrementClick}
+                  onClick={() => {
+                    if (!isTimerRunning && (breakDuration > 1)){
+                    setBreakDuration(breakDuration -1)
+                    }
+                  }}
+
                 >
                   <span className="oi oi-minus" />
                 </button>
@@ -28,11 +31,13 @@ function Break ({breakDuration, handleIncrementClick}) {
                   type="button"
                   className="btn btn-secondary"
                   data-testid="increase-break"
-                  name="increase-break"
-                  onClick={handleIncrementClick}
+                  onClick={() => {
+                    if(!isTimerRunning && breakDuration < 15){
+                    setBreakDuration(breakDuration +1)
+                    }
+                  }}
                 >
                   <span className="oi oi-plus" />
-
                 </button>
 
             </div>

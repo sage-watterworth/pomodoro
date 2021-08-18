@@ -8,27 +8,30 @@ import SubTitle from "./SubTitle";
 function Pomodoro() {
 
   const initialStates = {
-    focusDuration: 25,
-    breakDuration: 5,
-    isTimerRunning: false,
+  //   focusDuration: 25,
+  //   breakDuration: 5,
+  //   isTimerRunning: false,
     sessionCountdown: 0,
-    focusSessionActive: false,
-    sessionActive: false,
+  //   focusSessionActive: false,
+  //   sessionActive: false,
     ariaValue: 0,
-  };
+   };
 
   // Timer starts out paused
   const [isTimerRunning, setIsTimerRunning] = useState(false);
   // The current session - null where there is no session running
   const [session, setSession] = useState(null);
-  const [sessionCountdown, setSessionCountdown] = useState(0);
+  const [sessionCountdown, setSessionCountdown] = useState(initialStates.sessionCountdown);
   const [sessionActive, setSessionActive] = useState(false);
-  const [ariaValue, setAriaValue] = useState(0);
+  const [ariaValue, setAriaValue] = useState(initialStates.ariaValue);
+  const[elapsed, setElapsed] = useState(0)
+
 
   // ToDo: Allow the user to adjust the focus and break duration.
   const [focusDuration, setFocusDuration] = useState(25);
   const [breakDuration, setBreakDuration] = useState(5);
   const [focusSessionActive, setFocusSessionActive] = useState(false);
+  const [breakLeft, setBreakLeft] = useState(0)
 
   //disable and enable stop button
   const [stopButton, setStopButton] = useState(true)
@@ -78,30 +81,6 @@ function nextSession(focusDuration, breakDuration) {
 }
 
 
-  const handleIncrementClick = ({ target }) => {
-    if (
-      target.name === "increase-focus" ||
-      target.parentNode.name === "increase-focus"
-    ) {
-      setFocusDuration((currentFocusDuration) => Math.min(currentFocusDuration + 5, 60));
-    } else if (
-      target.name === "decrease-focus" ||
-      target.parentNode.name === "decrease-focus"
-    ) {
-      setFocusDuration((currentFocusDuration) => Math.max(currentFocusDuration - 5, 5));
-    } else if (
-      target.name === "increase-break" ||
-      target.parentNode.name === "increase-break"
-    ) {
-      setBreakDuration((currentFocusDuration) => Math.min(currentFocusDuration + 1, 15));
-    } else if (
-      target.name === "decrease-break" ||
-      target.parentNode.name === "decrease-break"
-    ) {
-      setBreakDuration((currentFocusDuration) => Math.max(currentFocusDuration - 1, 1));
-    }
-  };
-
 
 function handleStop(){
   setIsTimerRunning(false)
@@ -110,87 +89,78 @@ function handleStop(){
   setDisableButton(false)
   setFocusSessionActive(false)
   setSessionActive(false)
+  setElapsed(0)
 }
 
-  useInterval(
-    () => {
 
-      // Progress bar
-      if (!focusSessionActive) {
-        setAriaValue((sessionCountdown / (focusDuration * 60)) * 100);
-      } else if (!focusSessionActive && (sessionCountdown !== 0)) {
-        setAriaValue((sessionCountdown / (breakDuration * 60)) * 100);
-      }
+useInterval(() => {
+  setBreakLeft(breakLeft + 1)
+  if (session.timeRemaining === 0) {
+    new Audio("https://bigsoundbank.com/UPLOAD/mp3/1482.mp3").play();
+    setSession(nextSession(focusDuration, breakDuration));
+  }
+  setSession(nextTick);
+const left = session.timeRemaining
+if(session.label === "Focusing") {
+  setAriaValue(100*(focusDuration * 60 - left)/(focusDuration*60))
+} else {
+  setAriaValue(100*(breakDuration * 60 - left)/(breakDuration*60))
+}
+},
+isTimerRunning ? 1000 : null
+);
 
 
-      /*
-      Run increment countdown at turn of new session
-      */
-      setSessionCountdown((currentSessionCountdown) => {
-        if (
-          focusSessionActive &&
-          currentSessionCountdown === focusDuration * 60
-        ) {
-          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
-          setFocusSessionActive(!focusSessionActive);
-          return (currentSessionCountdown = 0);
-        } else if (
-          !focusSessionActive &&
-          currentSessionCountdown === breakDuration * 60
-        ) {
-          new Audio(`https://bigsoundbank.com/UPLOAD/mp3/1482.mp3`).play();
-          setFocusSessionActive(!focusSessionActive);
-          return (currentSessionCountdown = 0);
-        } else {
-          return (currentSessionCountdown += 1);
-        }
-      });
-    },
-    isTimerRunning ? 1000 : null
-  );
+useInterval(()=> {
+  if(session && session.timeRemaining) {
+    return setElapsed(elapsed + 1)
+  }
+},1000)
 
 
   /**
    * Called whenever the play/pause button is clicked.
    */
-function handlePlayPauseClick() {
-     setIsTimerRunning((prevState) => {
-       const nextState = !prevState;
-       if (nextState) {
-         setSession((prevStateSession) => {
-           // If the timer is starting and the previous session is null,
-           // start a focusing session.
-           if (prevStateSession === null) {
-            setDisableButton(false);
-            setSessionCountdown(sessionActive)
-            setSessionActive(true)
-             return {
-               label: "Focusing",
-               timeRemaining: focusDuration * 60,
-             };
-           }
-           return prevStateSession;
-         });
-      }
-    return nextState;
-    });
-  }
+          function handlePlayPauseClick() {
+              setIsTimerRunning((prevState) => {
+                const nextState = !prevState;
+                if (nextState) {
+                  setSession((prevStateSession) => {
+                    // If the timer is starting and the previous session is null,
+                    // start a focusing session.
+                    if (prevStateSession === null) {
+                      setDisableButton(false);
+                      setSessionCountdown(sessionActive)
+                      setSessionActive(true)
+                      return {
+                        label: "Focusing",
+                        timeRemaining: focusDuration * 60,
+                      };
+                    }
+                    return prevStateSession;
+                  });
+                }
+              return nextState;
+              });
+            }
 
   return (
     <div className="pomodoro">
 
        <Break
         breakDuration={breakDuration}
-        handleIncrementClick={handleIncrementClick}
+        setBreakDuration={setBreakDuration}
+        isTimerRunning={isTimerRunning}
       />
       <Focus
       focusDuration={focusDuration}
-      handleIncrementClick={handleIncrementClick}
+      setFocusDuration={setFocusDuration}
+      isTimerRunning={isTimerRunning}
+
       />
       <PlayPause
         isTimerRunning={isTimerRunning}
         handleStop={handleStop}
-        disableButton={disableButton}
         focusDuration={focusDuration}
         breakDuration={breakDuration}
         focusSessionActive={focusSessionActive}
@@ -203,10 +173,12 @@ function handlePlayPauseClick() {
       <SubTitle
       sessionActive={sessionActive}
       ariaValue={ariaValue}
-      sessionCountdown={sessionCountdown}
+      session={session}
       focusDuration={focusDuration}
       breakDuration={breakDuration}
       focusSessionActive={focusSessionActive}
+      sessionCountdown={sessionCountdown}
+
       />
     </div>
   )
